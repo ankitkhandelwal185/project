@@ -40,7 +40,6 @@ def login(request):
                     status=status.HTTP_200_OK)
 
 
-@csrf_exempt
 @api_view(["GET"])
 def get_user(request):
     logging.info("get_user_called_with_user_name = {}".format(request.GET.get("userName")))
@@ -59,7 +58,6 @@ def get_user(request):
     return Response({'result': result}, status=status.HTTP_200_OK)
 
 
-@csrf_exempt
 @api_view(["POST"])
 def create_article(request):
     logging.info("create_article_called_with_paylaod = {}".format(request.data))
@@ -73,7 +71,6 @@ def create_article(request):
     return Response(data, status=status.HTTP_200_OK)
 
 
-@csrf_exempt
 @api_view(["POST"])
 def update_article(request):
     logging.info("update_article_called_with_paylaod = {}".format(request.data))
@@ -88,7 +85,6 @@ def update_article(request):
     return Response(data, status=status.HTTP_200_OK)
 
 
-@csrf_exempt
 @api_view(["GET"])
 def get_article(request):
     article_id = request.GET.get("articleId")
