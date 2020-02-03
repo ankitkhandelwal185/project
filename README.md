@@ -1,5 +1,5 @@
 
-#project setup
+#project setup  
 pip install django psycopg2  
 python manage.py makemigrations  
 python manage.py migrate  
