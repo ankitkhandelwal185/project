@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from apis.serializers import ArticleSerializer
 from django.shortcuts import render
 from django.contrib.auth import authenticate
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
 from .models import Article
 from rest_framework.authtoken.models import Token
-from django.contrib.auth.models import User
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from apis.serializers import ArticleSerializer
 import logging
 
 
@@ -31,7 +31,6 @@ def login(request):
         return Response({'error': 'Please provide both username and password'},
                         status=status.HTTP_400_BAD_REQUEST)
     user = authenticate(username=username, password=password)
-    print(user, username, password)
     if not user:
         return Response({'error': 'Invalid Credentials'},
                         status=status.HTTP_404_NOT_FOUND)
