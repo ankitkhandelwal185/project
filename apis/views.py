@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from django.contrib.auth import authenticate
 from django.views.decorators.csrf import csrf_exempt
+from .models import Article
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
@@ -45,6 +46,10 @@ def create_article(request):
     serializer = ArticleSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     data = serializer.validated_data
+    try:
+        Article.objects.create(**data)
+    except Exception as e:
+        return Response({"error = {}".format(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return Response(data, status=status.HTTP_200_OK)
 
 
@@ -55,12 +60,25 @@ def update_article(request):
     serializer = ArticleSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     data = serializer.validated_data
+    print(request.data['articleId'])
+    try:
+        Article.objects.filter(id=request.data['articleId']).update(**data)
+    except Exception as e:
+        return Response({"error = {}".format(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return Response(data, status=status.HTTP_200_OK)
 
 
 @csrf_exempt
 @api_view(["GET"])
 def get_article(request):
-    id = request.GET.get("articleId")
-    return Response(id, status=status.HTTP_200_OK)
+    article_id = request.GET.get("articleId")
+    try:
+        article = Article.objects.get(id=article_id)
+        result = {
+            "headline": article.headline,
+            "content": article.content
+        }
+    except Exception as e:
+        return Response({"error = {}".format(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return Response(result, status=status.HTTP_200_OK)
 
