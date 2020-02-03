@@ -39,3 +39,7 @@ payload ->
 
 article detail -> http://localhost:8011/api/article/detail?articleId=1234
 GET request
+
+
+user detail -> http://localhost:8011/api/user/detail?userName=ankit
+GET request

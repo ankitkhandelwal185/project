@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate
 from django.views.decorators.csrf import csrf_exempt
 from .models import Article
 from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import User
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -37,6 +38,25 @@ def login(request):
     token, _ = Token.objects.get_or_create(user=user)
     return Response({'token': token.key},
                     status=status.HTTP_200_OK)
+
+
+@csrf_exempt
+@api_view(["GET"])
+def get_user(request):
+    logging.info("get_user_called_with_user_name = {}".format(request.GET.get("userName")))
+    userName = request.GET.get("userName")
+    if userName is None:
+        return Response({'error': 'Please provide user name'},
+                        status=status.HTTP_400_BAD_REQUEST)
+    try:
+        user = User.objects.get(username=userName)
+        result = {
+            "name": user.username,
+            "email": user.email
+        }
+    except Exception as e:
+        return Response({"error = {}".format(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return Response({'result': result}, status=status.HTTP_200_OK)
 
 
 @csrf_exempt
@@ -72,6 +92,9 @@ def update_article(request):
 @api_view(["GET"])
 def get_article(request):
     article_id = request.GET.get("articleId")
+    if article_id is None:
+        return Response({'error': 'Please provide article id'},
+                        status=status.HTTP_400_BAD_REQUEST)
     try:
         article = Article.objects.get(id=article_id)
         result = {
