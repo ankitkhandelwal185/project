@@ -77,7 +77,6 @@ def update_article(request):
     serializer = ArticleSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     data = serializer.validated_data
-    print(request.data['articleId'])
     try:
         Article.objects.filter(id=request.data['articleId']).update(**data)
     except Exception as e:
